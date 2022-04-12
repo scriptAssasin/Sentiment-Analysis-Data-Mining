@@ -8,5 +8,7 @@ Virtual Environment Setup:
 
 FileSystem:
 LabSolutions folder -> Examples from the lab of the course (downloaded from Eclass)
+
 playground.py -> in this file we do the various tests
+
 ergasia1/main.py -> stable version of the assignment, before we move it to jupyter notebook
