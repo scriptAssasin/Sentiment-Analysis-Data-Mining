@@ -7,6 +7,7 @@ Virtual Environment Setup:
 4. pip install -r requirements.txt
 
 FileSystem:
+
 LabSolutions folder -> Examples from the lab of the course (downloaded from Eclass)
 
 playground.py -> in this file we do the various tests
