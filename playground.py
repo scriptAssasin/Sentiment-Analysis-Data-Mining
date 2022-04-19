@@ -7,7 +7,7 @@ nltk.download('vader_lexicon')
 cachedStopWords = stopwords.words("english") 
 from collections import Counter
 import pandas as pd
-from nltk.sentiment import SentimentIntensityAnalyzer
+import matplotlib.pyplot as plt
 
 
 def remove_links(x):
@@ -41,15 +41,53 @@ file.close()
 # print(data)
 
 #katanomi synaisthimatwn
+# selected_sentiments=['NEU','POS','NEG']
 
-analyzer = SentimentIntensityAnalyzer()
-data['polarity'] = data['text'].apply(lambda x: analyzer.polarity_scores(x))
-print(data.head(3))
+# sentiment_distribution = data.loc[data['sentiment'].isin(selected_sentiments),'sentiment'].value_counts()
+# plt.bar(sentiment_distribution.index, sentiment_distribution.values)
+# plt.show()
 
+# data.to_csv('testing1.csv', encoding='utf-8')
 #evresi twn pio syxna xrisomopoioymenwn leksewn
-# word_count = Counter(" ".join(data['text']).split()).most_common(10)
-# word_frequency = pd.DataFrame(word_count, columns = ['Word', 'Frequency'])
-# print(word_frequency)
+# word_count_all = Counter(" ".join(data['text']).split()).most_common(10)
+# word_frequency_all = pd.DataFrame(word_count_all, columns = ['Word', 'Frequency'])
+# print(word_frequency_all)
+
+# #evresi twn pio syxna xrisomopoioymenwn leksewn analoga to synaisthima
+# negative_subset_data = data[data['sentiment'] == 'NEG']
+# positive_subset_data = data[data['sentiment'] == 'POS']
+# neutral_subset_data = data[data['sentiment'] == 'NEU']
+
+# word_count_negative = Counter(" ".join(negative_subset_data['text']).split()).most_common(10)
+# word_frequency_negative = pd.DataFrame(word_count_negative, columns = ['Word', 'Frequency'])
+# word_frequency_negative.plot(x='Word',y='Frequency',kind='bar')
+# plt.title("Word frequency Negative")
+# plt.show()
+
+
+# word_count_positive = Counter(" ".join(positive_subset_data['text']).split()).most_common(10)
+# word_frequency_positive = pd.DataFrame(word_count_positive, columns = ['Word', 'Frequency'])
+# word_frequency_positive.plot(x='Word',y='Frequency',kind='bar')
+# plt.title("Word frequency Positive")
+# plt.show()
+
+
+# word_count_neutral = Counter(" ".join(neutral_subset_data['text']).split()).most_common(10)
+# word_frequency_neutral = pd.DataFrame(word_count_neutral, columns = ['Word', 'Frequency'])
+# word_frequency_neutral.plot(x='Word',y='Frequency',kind='bar')
+# plt.title("Word frequency Neutral")
+# plt.show()
+
+
+ 
+
+# print(word_frequency_all)
+data['date']= pd.to_datetime(data['date'])
+
+tels = data['date'].groupby([data.date.dt.year, data.date.dt.month]).agg('count')
+ax = tels.unstack(level=0).plot(kind='bar', subplots=False, rot=0, figsize=(9, 7), layout=(2, 3))
+plt.tight_layout()
+plt.show()
 
 # # close the file
 # file.close()
