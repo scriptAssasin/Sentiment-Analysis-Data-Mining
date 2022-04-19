@@ -28,7 +28,7 @@ file = open('eclass_all_with_sentiment_v2.pkl', 'rb')
 
 # # dump information to that file
 data = pickle.load(file)
-# data.to_csv('testing1.csv', encoding='utf-8')
+
 data['text'] = data['text'].apply(remove_links)
 data['text'] = data['text'].apply(lowercase)
 data['text'] = data['text'].apply(remove_punctuation)
@@ -54,7 +54,7 @@ plt.bar(sentiment_distribution.index, sentiment_distribution.values)
 #evresi twn pio syxna xrisomopoioymenwn leksewn
 word_count_all = Counter(" ".join(data['text']).split()).most_common(10)
 word_frequency_all = pd.DataFrame(word_count_all, columns = ['Word', 'Frequency'])
-print(word_frequency_all)
+# print(word_frequency_all)
 
 word_frequency_all.plot(x='Word',y='Frequency',kind='bar')
 plt.title("Word frequency")
@@ -92,15 +92,17 @@ plt.title("Word frequency Neutral")
 #Sygrisi ws pros synaisthima astrazeneca vs moderna & pfizer
 
 astraz = data[data['text'].str.contains("astrazeneca")]
+astraz.to_csv('testing1.csv', encoding='utf-8')
 
 other = data[data['text'].str.contains("moderna") & (data['text'].str.contains("pfizer") | data['text'].str.contains("biontech"))]
+other.to_csv('testing2.csv', encoding='utf-8')
 
 mean1 = astraz['sentiment'].value_counts().idxmax()
 mean2 = other['sentiment'].value_counts().idxmax()
 
 #mean1 is equal to mean2
 
-print(mean1,mean2) 
+# print(mean1,mean2) 
 
 ###################################################
 

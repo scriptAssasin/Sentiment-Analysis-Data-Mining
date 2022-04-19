@@ -54,7 +54,7 @@ plt.bar(sentiment_distribution.index, sentiment_distribution.values)
 #evresi twn pio syxna xrisomopoioymenwn leksewn
 word_count_all = Counter(" ".join(data['text']).split()).most_common(10)
 word_frequency_all = pd.DataFrame(word_count_all, columns = ['Word', 'Frequency'])
-print(word_frequency_all)
+# print(word_frequency_all)
 
 word_frequency_all.plot(x='Word',y='Frequency',kind='bar')
 plt.title("Word frequency")
@@ -100,7 +100,7 @@ mean2 = other['sentiment'].value_counts().idxmax()
 
 #mean1 is equal to mean2
 
-print(mean1,mean2) 
+# print(mean1,mean2) 
 
 ###################################################
 
