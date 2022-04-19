@@ -113,3 +113,25 @@ tels = data['date'].groupby([data.date.dt.year, data.date.dt.month]).agg('count'
 ax = tels.unstack(level=0).plot(kind='bar', subplots=True, rot=0, figsize=(9, 7), layout=(2, 3))
 plt.tight_layout()
 # plt.show()
+
+
+
+########################---------PART 3-----------#######################
+
+from sklearn.feature_extraction.text import TfidfVectorizer
+v = TfidfVectorizer()
+x = v.fit_transform(data['text'])
+
+
+output = open('tfidf.pkl', 'wb')
+pickle.dump(x, output)
+output.close()
+
+file = open('tfidf.pkl', 'rb')
+
+# # dump information to that file
+test = pickle.load(file)
+print(test.toarray())
+
+file.close()
+# print(x.toarray())

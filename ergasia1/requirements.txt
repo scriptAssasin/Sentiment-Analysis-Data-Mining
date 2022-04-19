@@ -14,3 +14,4 @@ wincertstore==0.2
 yarg==0.1.9
 nltk
 matplotlib
+sklearn
