@@ -40,61 +40,74 @@ data['text'] = data['text'].apply(remove_stopwords)
 file.close()
 # print(data)
 
-#katanomi synaisthimatwn
-# selected_sentiments=['NEU','POS','NEG']
+#######################################################################
 
-# sentiment_distribution = data.loc[data['sentiment'].isin(selected_sentiments),'sentiment'].value_counts()
-# plt.bar(sentiment_distribution.index, sentiment_distribution.values)
+#katanomi synaisthimatwn
+selected_sentiments=['NEU','POS','NEG']
+
+sentiment_distribution = data.loc[data['sentiment'].isin(selected_sentiments),'sentiment'].value_counts()
+plt.bar(sentiment_distribution.index, sentiment_distribution.values)
 # plt.show()
 
-# data.to_csv('testing1.csv', encoding='utf-8')
+#######################################################################
+
 #evresi twn pio syxna xrisomopoioymenwn leksewn
-# word_count_all = Counter(" ".join(data['text']).split()).most_common(10)
-# word_frequency_all = pd.DataFrame(word_count_all, columns = ['Word', 'Frequency'])
-# print(word_frequency_all)
+word_count_all = Counter(" ".join(data['text']).split()).most_common(10)
+word_frequency_all = pd.DataFrame(word_count_all, columns = ['Word', 'Frequency'])
+print(word_frequency_all)
+
+word_frequency_all.plot(x='Word',y='Frequency',kind='bar')
+plt.title("Word frequency")
+# plt.show()
+
+#################################################################
 
 # #evresi twn pio syxna xrisomopoioymenwn leksewn analoga to synaisthima
-# negative_subset_data = data[data['sentiment'] == 'NEG']
-# positive_subset_data = data[data['sentiment'] == 'POS']
-# neutral_subset_data = data[data['sentiment'] == 'NEU']
+negative_subset_data = data[data['sentiment'] == 'NEG']
+positive_subset_data = data[data['sentiment'] == 'POS']
+neutral_subset_data = data[data['sentiment'] == 'NEU']
 
-# word_count_negative = Counter(" ".join(negative_subset_data['text']).split()).most_common(10)
-# word_frequency_negative = pd.DataFrame(word_count_negative, columns = ['Word', 'Frequency'])
-# word_frequency_negative.plot(x='Word',y='Frequency',kind='bar')
-# plt.title("Word frequency Negative")
+word_count_negative = Counter(" ".join(negative_subset_data['text']).split()).most_common(10)
+word_frequency_negative = pd.DataFrame(word_count_negative, columns = ['Word', 'Frequency'])
+word_frequency_negative.plot(x='Word',y='Frequency',kind='bar')
+plt.title("Word frequency Negative")
 # plt.show()
 
 
-# word_count_positive = Counter(" ".join(positive_subset_data['text']).split()).most_common(10)
-# word_frequency_positive = pd.DataFrame(word_count_positive, columns = ['Word', 'Frequency'])
-# word_frequency_positive.plot(x='Word',y='Frequency',kind='bar')
-# plt.title("Word frequency Positive")
+word_count_positive = Counter(" ".join(positive_subset_data['text']).split()).most_common(10)
+word_frequency_positive = pd.DataFrame(word_count_positive, columns = ['Word', 'Frequency'])
+word_frequency_positive.plot(x='Word',y='Frequency',kind='bar')
+plt.title("Word frequency Positive")
 # plt.show()
 
 
-# word_count_neutral = Counter(" ".join(neutral_subset_data['text']).split()).most_common(10)
-# word_frequency_neutral = pd.DataFrame(word_count_neutral, columns = ['Word', 'Frequency'])
-# word_frequency_neutral.plot(x='Word',y='Frequency',kind='bar')
-# plt.title("Word frequency Neutral")
+word_count_neutral = Counter(" ".join(neutral_subset_data['text']).split()).most_common(10)
+word_frequency_neutral = pd.DataFrame(word_count_neutral, columns = ['Word', 'Frequency'])
+word_frequency_neutral.plot(x='Word',y='Frequency',kind='bar')
+plt.title("Word frequency Neutral")
 # plt.show()
 
+#####################################################################
 
- 
+#Sygrisi ws pros synaisthima astrazeneca vs moderna & pfizer
 
-# print(word_frequency_all)
+astraz = data[data['text'].str.contains("astrazeneca")]
+
+other = data[data['text'].str.contains("moderna") & (data['text'].str.contains("pfizer") | data['text'].str.contains("biontech"))]
+
+mean1 = astraz['sentiment'].value_counts().idxmax()
+mean2 = other['sentiment'].value_counts().idxmax()
+
+#mean1 is equal to mean2
+
+print(mean1,mean2) 
+
+###################################################
+
+#Subplots για το πληθος των tweets ανα μήνα
 data['date']= pd.to_datetime(data['date'])
 
 tels = data['date'].groupby([data.date.dt.year, data.date.dt.month]).agg('count')
-ax = tels.unstack(level=0).plot(kind='bar', subplots=False, rot=0, figsize=(9, 7), layout=(2, 3))
+ax = tels.unstack(level=0).plot(kind='bar', subplots=True, rot=0, figsize=(9, 7), layout=(2, 3))
 plt.tight_layout()
-plt.show()
-
-# # close the file
-# file.close()
-
-# print('Showing the pickled data:')
-
-# cnt = 0
-# for item in data:
-#     print('The data ', cnt, ' is : ', item)
-#     cnt += 1
+# plt.show()
