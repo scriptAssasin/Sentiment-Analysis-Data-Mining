@@ -111,3 +111,5 @@ tels = data['date'].groupby([data.date.dt.year, data.date.dt.month]).agg('count'
 ax = tels.unstack(level=0).plot(kind='bar', subplots=True, rot=0, figsize=(9, 7), layout=(2, 3))
 plt.tight_layout()
 # plt.show()
+
+

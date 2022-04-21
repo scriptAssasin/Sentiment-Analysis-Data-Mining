@@ -8,6 +8,8 @@ cachedStopWords = stopwords.words("english")
 from collections import Counter
 import pandas as pd
 import matplotlib.pyplot as plt
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.model_selection import train_test_split
 
 
 def remove_links(x):
@@ -118,20 +120,56 @@ plt.tight_layout()
 
 ########################---------PART 3-----------#######################
 
-from sklearn.feature_extraction.text import TfidfVectorizer
-v = TfidfVectorizer()
-x = v.fit_transform(data['text'])
+# from sklearn.feature_extraction.text import TfidfVectorizer
+# v = TfidfVectorizer()
+# x = v.fit_transform(data['text'])
 
 
-output = open('tfidf.pkl', 'wb')
-pickle.dump(x, output)
-output.close()
+# output = open('tfidf.pkl', 'wb')
+# pickle.dump(x, output)
+# output.close()
 
-file = open('tfidf.pkl', 'rb')
+# file = open('tfidf.pkl', 'rb')
 
-# # dump information to that file
-test = pickle.load(file)
-print(test.toarray())
+# # # dump information to that file
+# test = pickle.load(file)
+# print(test.toarray())
+
+
+
+#############################################
+
+
+use_data = data.iloc[:22000,:]
+rest = data.iloc[22000:,:]
+#print(use_data)
+#print(rest)
+
+data1 = use_data.values
+#print(data)
+X, y = data1[:, 10], data1[:, -1]
+#print(X)
+#print(y)
+#print(X.shape,y.shape)
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=1)
+#print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)
+
+
+vectorizer = CountVectorizer()
+X1 = vectorizer.fit_transform(X_train)
+
+# output = open('bagwprds.pkl', 'wb')
+# pickle.dump(X1, output)
+# output.close()
+
+# file = open('bagwords.pkl', 'rb')
+
+# # # dump information to that file
+# test = pickle.load(file)
+print(X1.toarray())
+
+#############################################
 
 file.close()
 # print(x.toarray())
