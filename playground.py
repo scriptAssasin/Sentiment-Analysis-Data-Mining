@@ -1,3 +1,4 @@
+import numpy as np
 import pickle
 import re
 import nltk
@@ -10,6 +11,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.model_selection import train_test_split
+from sklearn import datasets
 
 
 def remove_links(x):
@@ -120,20 +122,7 @@ plt.tight_layout()
 
 ########################---------PART 3-----------#######################
 
-# from sklearn.feature_extraction.text import TfidfVectorizer
-# v = TfidfVectorizer()
-# x = v.fit_transform(data['text'])
 
-
-# output = open('tfidf.pkl', 'wb')
-# pickle.dump(x, output)
-# output.close()
-
-# file = open('tfidf.pkl', 'rb')
-
-# # # dump information to that file
-# test = pickle.load(file)
-# print(test.toarray())
 
 
 
@@ -152,24 +141,131 @@ X, y = data1[:, 10], data1[:, -1]
 #print(y)
 #print(X.shape,y.shape)
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=1)
+#X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=1)
 #print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)
 
+#######################################################
 
 vectorizer = CountVectorizer()
-X1 = vectorizer.fit_transform(X_train)
+X1 = vectorizer.fit_transform(X)
+X_train, X_test, y_train, y_test = train_test_split(X1, y, test_size=0.20, random_state=1)
+print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)
+# X2 = vectorizer.fit_transform(X_test)
+print(X1.shape)
 
-# output = open('bagwprds.pkl', 'wb')
-# pickle.dump(X1, output)
+output = open('bagwords.pkl', 'wb')
+pickle.dump(X1, output)
+output.close()
+
+file = open('bagwords.pkl', 'rb')
+
+# # dump information to that file
+# test = pickle.load(file)
+#print(X1.toarray())
+
+#############################################
+
+
+# from sklearn.feature_extraction.text import TfidfVectorizer
+# v = TfidfVectorizer()
+# x = v.fit_transform(X_train)
+# xt = v.fit_transform(X_test)
+
+
+# output = open('tfidf.pkl', 'wb')
+# pickle.dump(x, output)
 # output.close()
 
-# file = open('bagwords.pkl', 'rb')
+# file = open('tfidf.pkl', 'rb')
 
 # # # dump information to that file
 # test = pickle.load(file)
-print(X1.toarray())
 
-#############################################
+
+#print(test.toarray())
+
+
+#########################################################################
+
+from gensim.models import Word2Vec
+
+
+#print("test")
+# df_X_train = pd.DataFrame(X_train, columns=['text'])
+# tokenized_tweet = df_X_train['text'].apply(lambda x: x.split())  ####?
+# #print(tokenized_tweet.iloc[0])
+# #print("test2")
+
+# model_w2v = Word2Vec(
+#                 tokenized_tweet,
+#                 vector_size=200, # desired no. of features/independent variables
+#                 window=5, # context window size
+#                 min_count=1,
+#                 sg = 1, # 1 for skip-gram model
+#                 hs = 0,
+#                 negative = 10, # for negative sampling
+#                 workers= 3, # no.of cores
+#                 seed = 34)
+
+# model_w2v.train(tokenized_tweet, total_examples= len(df_X_train), epochs=20)
+# # #print("end")
+# model_w2v.save('telis')
+# retrieved_model = Word2Vec.load('telis')
+# tweet_list = []
+
+# for tweet in X_train:
+#     word_tokens = tweet.split()
+#     #print(word_tokens)
+#     sum = retrieved_model.wv[word_tokens[0]]
+#     for count,token in enumerate(word_tokens,start=1):
+#         sum = np.add(sum,retrieved_model.wv[token])
+#     avg = np.true_divide(sum,len(word_tokens))    
+#     tweet_list.append(avg)
+#     #print(avg,type(avg),avg.shape)
+#     #break    
+
+
+#print(tweet_list)
+# output = open('w2v.pkl', 'wb')
+# pickle.dump(tweet_list, output)
+# output.close()
+
+
+iris = datasets.load_iris()
+digits = datasets.load_digits()
+
+from sklearn import svm
+print("1")
+clf = svm.SVC()
+print("2")
+clf.fit(X_train, y_train)
+print("3")
+svm.SVC()
+print("4")
+
+print(clf.predict(X_test))
+print("5")
+
+# w2v_df = pd.DataFrame(tweet_list,columns=['average'])
+
+#print(model_w2v.wv['proceeds'])
+
+# print(retrieved_model.wv['astrazeneca'])
+# print(type(retrieved_model.wv['astrazeneca']))
+# vector1 = retrieved_model.wv['astrazeneca']
+# vector2 = retrieved_model.wv['vaccine']
+# sum = np.add(vector1,vector2)
+# avg = np.true_divide(sum,2)
+# print(avg)
+# print(avg.shape)
+# print(sum)
+# print(type(sum))
+# print(sum.shape,vector1.shape,vector2.shape)
+#avg = sum 
+
+#print("type = ",type(model_w2v))
+#print(retrieved_model.wv.most_similar(positive="vaccine"))
+#########################################################################
 
 file.close()
 # print(x.toarray())
