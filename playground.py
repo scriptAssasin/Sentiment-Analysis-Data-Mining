@@ -16,6 +16,9 @@ from gensim.models import Word2Vec
 from sklearn import svm
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn import metrics
+from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import KFold
 
 
 def remove_links(idf_train):
@@ -260,6 +263,15 @@ clf.fit(idf_train, output_train)
 
 #print(clf.predict(bow_test))
 print(clf.predict(idf_test))
+print(clf.score(idf_test,output_test))
+sklearn.model_selection.KFold
+scores = cross_val_score(clf,input,expected_output,cv=10)
+#scores = cross_val_score(clf,input,expected_output,cv=10, scoring = 'accuracy')
+#scores = cross_val_score(clf,input,expected_output,cv=10, scoring = 'precision')
+#scores = cross_val_score(clf,input,expected_output,cv=10, scoring = 'recall')
+#scores = cross_val_score(clf,input,expected_output,cv=10, scoring = 'f1')
+
+#print("%0.2f accuracy with a standard deviation of %0.2f" % (scores.mean(), scores.std()))
 #print(clf.predict(tweet_list_test))
 
 #####################################################
