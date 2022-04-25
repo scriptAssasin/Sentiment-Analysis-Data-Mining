@@ -11,20 +11,23 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.model_selection import train_test_split
-from sklearn import datasets
+from gensim.models import Word2Vec
+from sklearn import svm
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.neighbors import KNeighborsClassifier
 
 
-def remove_links(x):
-    return re.sub(r"http\S+", "", x)
+def remove_links(idf_train):
+    return re.sub(r"http\S+", "", idf_train)
 
-def remove_punctuation(x):
-    return re.sub(r'[^\w\s]', '', x)
+def remove_punctuation(idf_train):
+    return re.sub(r'[^\w\s]', '', idf_train)
 
-def lowercase(x):
-    return x.lower()
+def lowercase(idf_train):
+    return idf_train.lower()
 
-def remove_stopwords(x):
-    return ' '.join([word for word in x.split() if word not in cachedStopWords])
+def remove_stopwords(idf_train):
+    return ' '.join([word for word in idf_train.split() if word not in cachedStopWords])
 
 
 # open a file, where you stored the pickled data
@@ -46,77 +49,77 @@ file.close()
 
 #######################################################################
 
-#katanomi synaisthimatwn
-selected_sentiments=['NEU','POS','NEG']
+# #katanomi synaisthimatwn
+# selected_sentiments=['NEU','POS','NEG']
 
-sentiment_distribution = data.loc[data['sentiment'].isin(selected_sentiments),'sentiment'].value_counts()
-plt.bar(sentiment_distribution.index, sentiment_distribution.values)
-# plt.show()
+# sentiment_distribution = data.loc[data['sentiment'].isin(selected_sentiments),'sentiment'].value_counts()
+# plt.bar(sentiment_distribution.index, sentiment_distribution.values)
+# # plt.show()
 
-#######################################################################
+# #######################################################################
 
-#evresi twn pio syxna xrisomopoioymenwn leksewn
-word_count_all = Counter(" ".join(data['text']).split()).most_common(10)
-word_frequency_all = pd.DataFrame(word_count_all, columns = ['Word', 'Frequency'])
-# print(word_frequency_all)
+# #evresi twn pio syxna xrisomopoioymenwn leksewn
+# word_count_all = Counter(" ".join(data['text']).split()).most_common(10)
+# word_frequency_all = pd.DataFrame(word_count_all, columns = ['Word', 'Frequency'])
+# # print(word_frequency_all)
 
-word_frequency_all.plot(x='Word',y='Frequency',kind='bar')
-plt.title("Word frequency")
-# plt.show()
+# word_frequency_all.plot(idf_train='Word',expected_output='Frequency',kind='bar')
+# plt.title("Word frequency")
+# # plt.show()
 
-#################################################################
+# #################################################################
 
-# #evresi twn pio syxna xrisomopoioymenwn leksewn analoga to synaisthima
-negative_subset_data = data[data['sentiment'] == 'NEG']
-positive_subset_data = data[data['sentiment'] == 'POS']
-neutral_subset_data = data[data['sentiment'] == 'NEU']
+# # #evresi twn pio syxna xrisomopoioymenwn leksewn analoga to synaisthima
+# negative_subset_data = data[data['sentiment'] == 'NEG']
+# positive_subset_data = data[data['sentiment'] == 'POS']
+# neutral_subset_data = data[data['sentiment'] == 'NEU']
 
-word_count_negative = Counter(" ".join(negative_subset_data['text']).split()).most_common(10)
-word_frequency_negative = pd.DataFrame(word_count_negative, columns = ['Word', 'Frequency'])
-word_frequency_negative.plot(x='Word',y='Frequency',kind='bar')
-plt.title("Word frequency Negative")
-# plt.show()
-
-
-word_count_positive = Counter(" ".join(positive_subset_data['text']).split()).most_common(10)
-word_frequency_positive = pd.DataFrame(word_count_positive, columns = ['Word', 'Frequency'])
-word_frequency_positive.plot(x='Word',y='Frequency',kind='bar')
-plt.title("Word frequency Positive")
-# plt.show()
+# word_count_negative = Counter(" ".join(negative_subset_data['text']).split()).most_common(10)
+# word_frequency_negative = pd.DataFrame(word_count_negative, columns = ['Word', 'Frequency'])
+# word_frequency_negative.plot(idf_train='Word',expected_output='Frequency',kind='bar')
+# plt.title("Word frequency Negative")
+# # plt.show()
 
 
-word_count_neutral = Counter(" ".join(neutral_subset_data['text']).split()).most_common(10)
-word_frequency_neutral = pd.DataFrame(word_count_neutral, columns = ['Word', 'Frequency'])
-word_frequency_neutral.plot(x='Word',y='Frequency',kind='bar')
-plt.title("Word frequency Neutral")
-# plt.show()
+# word_count_positive = Counter(" ".join(positive_subset_data['text']).split()).most_common(10)
+# word_frequency_positive = pd.DataFrame(word_count_positive, columns = ['Word', 'Frequency'])
+# word_frequency_positive.plot(idf_train='Word',expected_output='Frequency',kind='bar')
+# plt.title("Word frequency Positive")
+# # plt.show()
 
-#####################################################################
 
-#Sygrisi ws pros synaisthima astrazeneca vs moderna & pfizer
+# word_count_neutral = Counter(" ".join(neutral_subset_data['text']).split()).most_common(10)
+# word_frequency_neutral = pd.DataFrame(word_count_neutral, columns = ['Word', 'Frequency'])
+# word_frequency_neutral.plot(idf_train='Word',expected_output='Frequency',kind='bar')
+# plt.title("Word frequency Neutral")
+# # plt.show()
 
-astraz = data[data['text'].str.contains("astrazeneca")]
-astraz.to_csv('testing1.csv', encoding='utf-8')
+# #####################################################################
 
-other = data[data['text'].str.contains("moderna") & (data['text'].str.contains("pfizer") | data['text'].str.contains("biontech"))]
-other.to_csv('testing2.csv', encoding='utf-8')
+# #Sygrisi ws pros synaisthima astrazeneca vs moderna & pfizer
 
-mean1 = astraz['sentiment'].value_counts().idxmax()
-mean2 = other['sentiment'].value_counts().idxmax()
+# astraz = data[data['text'].str.contains("astrazeneca")]
+# astraz.to_csv('testing1.csv', encoding='utf-8')
 
-#mean1 is equal to mean2
+# other = data[data['text'].str.contains("moderna") & (data['text'].str.contains("pfizer") | data['text'].str.contains("biontech"))]
+# other.to_csv('testing2.csv', encoding='utf-8')
 
-# print(mean1,mean2) 
+# mean1 = astraz['sentiment'].value_counts().idxmax()
+# mean2 = other['sentiment'].value_counts().idxmax()
 
-###################################################
+# #mean1 is equal to mean2
 
-#Subplots για το πληθος των tweets ανα μήνα
-data['date']= pd.to_datetime(data['date'])
+# # print(mean1,mean2) 
 
-tels = data['date'].groupby([data.date.dt.year, data.date.dt.month]).agg('count')
-ax = tels.unstack(level=0).plot(kind='bar', subplots=True, rot=0, figsize=(9, 7), layout=(2, 3))
-plt.tight_layout()
-# plt.show()
+# ###################################################
+
+# #Subplots για το πληθος των tweets ανα μήνα
+# data['date']= pd.to_datetime(data['date'])
+
+# tels = data['date'].groupby([data.date.dt.year, data.date.dt.month]).agg('count')
+# ax = tels.unstack(level=0).plot(kind='bar', subplots=True, rot=0, figsize=(9, 7), layout=(2, 3))
+# plt.tight_layout()
+# # plt.show()
 
 
 
@@ -128,144 +131,140 @@ plt.tight_layout()
 
 #############################################
 
-
+# 10% split
 use_data = data.iloc[:22000,:]
 rest = data.iloc[22000:,:]
-#print(use_data)
-#print(rest)
 
-data1 = use_data.values
-#print(data)
-X, y = data1[:, 10], data1[:, -1]
-#print(X)
-#print(y)
-#print(X.shape,y.shape)
+model_data = use_data.values
+input, expected_output = model_data[:, 10], model_data[:, -1]
 
-#X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=1)
-#print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)
+# train and test split
+input_train, input_test, output_train, output_test = train_test_split(input, expected_output, test_size=0.20, random_state=1)
 
-#######################################################
 
+###################################################
+
+# bag of words
 vectorizer = CountVectorizer()
-X1 = vectorizer.fit_transform(X)
-X_train, X_test, y_train, y_test = train_test_split(X1, y, test_size=0.20, random_state=1)
-print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)
-# X2 = vectorizer.fit_transform(X_test)
-print(X1.shape)
+bow_train = vectorizer.fit_transform(input_train)
+bow_test = vectorizer.transform(input_test)
 
+# file save
 output = open('bagwords.pkl', 'wb')
-pickle.dump(X1, output)
+pickle.dump(bow_train, output)
 output.close()
 
-file = open('bagwords.pkl', 'rb')
-
-# # dump information to that file
-# test = pickle.load(file)
-#print(X1.toarray())
+#file = open('bagwords.pkl', 'rb')
+#test = pickle.load(file)
 
 #############################################
 
+# tfidf
 
-# from sklearn.feature_extraction.text import TfidfVectorizer
-# v = TfidfVectorizer()
-# x = v.fit_transform(X_train)
-# xt = v.fit_transform(X_test)
+from sklearn.feature_extraction.text import TfidfVectorizer
+v = TfidfVectorizer()
+idf_train = v.fit_transform(input_train)
+idf_test = v.transform(input_test)
 
+output = open('tfidf.pkl', 'wb')
+pickle.dump(idf_train, output)
+output.close()
 
-# output = open('tfidf.pkl', 'wb')
-# pickle.dump(x, output)
-# output.close()
-
-# file = open('tfidf.pkl', 'rb')
-
-# # # dump information to that file
-# test = pickle.load(file)
-
-
-#print(test.toarray())
-
+#file = open('tfidf.pkl', 'rb')
+#test = pickle.load(file)
 
 #########################################################################
 
-from gensim.models import Word2Vec
+# word 2 vec
+
+df_X_train = pd.DataFrame(input_train, columns=['text'])
+tokenized_tweet_train = df_X_train['text'].apply(lambda idf_train: idf_train.split()) 
+
+df_X_test = pd.DataFrame(input_test, columns=['text'])
+tokenized_tweet_test = df_X_test['text'].apply(lambda idf_train: idf_train.split())  
 
 
-#print("test")
-# df_X_train = pd.DataFrame(X_train, columns=['text'])
-# tokenized_tweet = df_X_train['text'].apply(lambda x: x.split())  ####?
-# #print(tokenized_tweet.iloc[0])
-# #print("test2")
+model_w2v = Word2Vec(
+                tokenized_tweet_train,
+                vector_size=200, # desired no. of features/independent variables
+                window=5, # context window size
+                min_count=1,
+                sg = 1, # 1 for skip-gram model
+                hs = 0,
+                negative = 10, # for negative sampling
+                workers= 3, # no.of cores
+                seed = 34)
 
-# model_w2v = Word2Vec(
-#                 tokenized_tweet,
-#                 vector_size=200, # desired no. of features/independent variables
-#                 window=5, # context window size
-#                 min_count=1,
-#                 sg = 1, # 1 for skip-gram model
-#                 hs = 0,
-#                 negative = 10, # for negative sampling
-#                 workers= 3, # no.of cores
-#                 seed = 34)
+model_w2v_test = Word2Vec(
+                tokenized_tweet_test,
+                vector_size=200, # desired no. of features/independent variables
+                window=5, # context window size
+                min_count=1,
+                sg = 1, # 1 for skip-gram model
+                hs = 0,
+                negative = 10, # for negative sampling
+                workers= 3, # no.of cores
+                seed = 34)
+model_w2v.train(tokenized_tweet_train, total_examples = len(df_X_train), epochs=20)
+model_w2v_test.train(tokenized_tweet_test, total_examples = len(df_X_test), epochs=20)
 
-# model_w2v.train(tokenized_tweet, total_examples= len(df_X_train), epochs=20)
-# # #print("end")
-# model_w2v.save('telis')
-# retrieved_model = Word2Vec.load('telis')
-# tweet_list = []
+# model_w2v.save('saved_model')
+#retrieved_model = Word2Vec.load('saved_model')
 
-# for tweet in X_train:
-#     word_tokens = tweet.split()
-#     #print(word_tokens)
-#     sum = retrieved_model.wv[word_tokens[0]]
-#     for count,token in enumerate(word_tokens,start=1):
-#         sum = np.add(sum,retrieved_model.wv[token])
-#     avg = np.true_divide(sum,len(word_tokens))    
-#     tweet_list.append(avg)
-#     #print(avg,type(avg),avg.shape)
-#     #break    
+tweet_list_train = []
+tweet_list_test = []
+
+# from word vector to tweet vector
+
+for tweet in input_train:
+    word_tokens = tweet.split()
+    sum = model_w2v.wv[word_tokens[0]]
+    for count,token in enumerate(word_tokens,start=1):
+        sum = np.add(sum,model_w2v.wv[token])
+    avg = np.true_divide(sum,len(word_tokens))    
+    tweet_list_train.append(avg)  
+
+for tweet in input_test:
+    word_tokens = tweet.split()
+    sum = model_w2v_test.wv[word_tokens[0]]
+    for count,token in enumerate(word_tokens,start=1):
+        sum = np.add(sum,model_w2v_test.wv[token])
+    avg = np.true_divide(sum,len(word_tokens))    
+    tweet_list_test.append(avg)
 
 
-#print(tweet_list)
 # output = open('w2v.pkl', 'wb')
-# pickle.dump(tweet_list, output)
+# pickle.dump(tweet_list_train, output)
 # output.close()
 
 
-iris = datasets.load_iris()
-digits = datasets.load_digits()
+#################################################
 
-from sklearn import svm
-print("1")
-clf = svm.SVC()
-print("2")
-clf.fit(X_train, y_train)
-print("3")
-svm.SVC()
-print("4")
+# part 4
 
-print(clf.predict(X_test))
-print("5")
+# classifier selection
 
-# w2v_df = pd.DataFrame(tweet_list,columns=['average'])
+#clf = svm.SVC()
+#clf = RandomForestClassifier()
+clf = KNeighborsClassifier(n_neighbors=3)
 
-#print(model_w2v.wv['proceeds'])
+# model train
 
-# print(retrieved_model.wv['astrazeneca'])
-# print(type(retrieved_model.wv['astrazeneca']))
-# vector1 = retrieved_model.wv['astrazeneca']
-# vector2 = retrieved_model.wv['vaccine']
-# sum = np.add(vector1,vector2)
-# avg = np.true_divide(sum,2)
-# print(avg)
-# print(avg.shape)
-# print(sum)
-# print(type(sum))
-# print(sum.shape,vector1.shape,vector2.shape)
-#avg = sum 
+#clf.fit(bow_train, output_train)
+clf.fit(idf_train, output_train)
+#clf.fit(tweet_list_train, output_train)
 
-#print("type = ",type(model_w2v))
-#print(retrieved_model.wv.most_similar(positive="vaccine"))
-#########################################################################
+#svm.SVC()   # needed for svm! dont delete
 
-file.close()
-# print(x.toarray())
+# prediction
+
+#print(clf.predict(bow_test))
+print(clf.predict(idf_test))
+#print(clf.predict(tweet_list_test))
+
+#####################################################
+# tests
+# print(model_w2v_test.wv.most_similar(positive="vaccine"))
+# print(model_w2v.wv.most_similar(positive="vaccine"))
+
+#######################################################
