@@ -125,33 +125,17 @@ plt.tight_layout()
 
 
 
-
-#############################################
-
-
 use_data = data.iloc[:22000,:]
 rest = data.iloc[22000:,:]
-#print(use_data)
-#print(rest)
 
 data1 = use_data.values
-#print(data)
-X, y = data1[:, 10], data1[:, -1]
-#print(X)
-#print(y)
-#print(X.shape,y.shape)
 
-#X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=1)
-#print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)
+X, y = data1[:, 10], data1[:, -1]
 
 #######################################################
 
 vectorizer = CountVectorizer()
 X1 = vectorizer.fit_transform(X)
-X_train, X_test, y_train, y_test = train_test_split(X1, y, test_size=0.20, random_state=1)
-print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)
-# X2 = vectorizer.fit_transform(X_test)
-print(X1.shape)
 
 output = open('bagwords.pkl', 'wb')
 pickle.dump(X1, output)
@@ -159,70 +143,59 @@ output.close()
 
 file = open('bagwords.pkl', 'rb')
 
-# # dump information to that file
 # test = pickle.load(file)
 #print(X1.toarray())
 
 #############################################
 
 
-# from sklearn.feature_extraction.text import TfidfVectorizer
-# v = TfidfVectorizer()
-# x = v.fit_transform(X_train)
-# xt = v.fit_transform(X_test)
+from sklearn.feature_extraction.text import TfidfVectorizer
+v = TfidfVectorizer()
+x = v.fit_transform(X)
 
-
-# output = open('tfidf.pkl', 'wb')
-# pickle.dump(x, output)
-# output.close()
+output = open('tfidf.pkl', 'wb')
+pickle.dump(x, output)
+output.close()
 
 # file = open('tfidf.pkl', 'rb')
 
-# # # dump information to that file
 # test = pickle.load(file)
 
-
 #print(test.toarray())
-
 
 #########################################################################
 
 from gensim.models import Word2Vec
 
+df_X_train = pd.DataFrame(X, columns=['text'])
+tokenized_tweet = df_X_train['text'].apply(lambda x: x.split()) 
 
-#print("test")
-# df_X_train = pd.DataFrame(X_train, columns=['text'])
-# tokenized_tweet = df_X_train['text'].apply(lambda x: x.split())  ####?
-# #print(tokenized_tweet.iloc[0])
-# #print("test2")
+model_w2v = Word2Vec(
+                tokenized_tweet,
+                vector_size=200, # desired no. of features/independent variables
+                window=5, # context window size
+                min_count=1,
+                sg = 1, # 1 for skip-gram model
+                hs = 0,
+                negative = 10, # for negative sampling
+                workers= 3, # no.of cores
+                seed = 34)
 
-# model_w2v = Word2Vec(
-#                 tokenized_tweet,
-#                 vector_size=200, # desired no. of features/independent variables
-#                 window=5, # context window size
-#                 min_count=1,
-#                 sg = 1, # 1 for skip-gram model
-#                 hs = 0,
-#                 negative = 10, # for negative sampling
-#                 workers= 3, # no.of cores
-#                 seed = 34)
+model_w2v.train(tokenized_tweet, total_examples= len(df_X_train), epochs=20)
+# #print("end")
+model_w2v.save('word_embeddings')
+retrieved_model = Word2Vec.load('word_embeddings')
+tweet_list = []
 
-# model_w2v.train(tokenized_tweet, total_examples= len(df_X_train), epochs=20)
-# # #print("end")
-# model_w2v.save('telis')
-# retrieved_model = Word2Vec.load('telis')
-# tweet_list = []
-
-# for tweet in X_train:
-#     word_tokens = tweet.split()
-#     #print(word_tokens)
-#     sum = retrieved_model.wv[word_tokens[0]]
-#     for count,token in enumerate(word_tokens,start=1):
-#         sum = np.add(sum,retrieved_model.wv[token])
-#     avg = np.true_divide(sum,len(word_tokens))    
-#     tweet_list.append(avg)
-#     #print(avg,type(avg),avg.shape)
-#     #break    
+for tweet in X:
+    word_tokens = tweet.split()
+    
+    sum = retrieved_model.wv[word_tokens[0]]
+    for count,token in enumerate(word_tokens,start=1):
+        sum = np.add(sum,retrieved_model.wv[token])
+    avg = np.true_divide(sum,len(word_tokens))    
+    tweet_list.append(avg)
+    
 
 
 #print(tweet_list)
@@ -234,17 +207,21 @@ from gensim.models import Word2Vec
 iris = datasets.load_iris()
 digits = datasets.load_digits()
 
-from sklearn import svm
-print("1")
-clf = svm.SVC()
-print("2")
-clf.fit(X_train, y_train)
-print("3")
-svm.SVC()
-print("4")
+# X_train, X_test, y_train, y_test = train_test_split(X1, y, test_size=0.20, random_state=1)
+# print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)
+# X2 = vectorizer.fit_transform(X_test)
 
-print(clf.predict(X_test))
-print("5")
+# from sklearn import svm
+# print("1")
+# clf = svm.SVC()
+# print("2")
+# clf.fit(X_train, y_train)
+# print("3")
+# svm.SVC()
+# print("4")
+
+# print(clf.predict(X_test))
+# print("5")
 
 # w2v_df = pd.DataFrame(tweet_list,columns=['average'])
 
