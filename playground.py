@@ -261,18 +261,29 @@ clf.fit(idf_train, output_train)
 
 # prediction
 
-#print(clf.predict(bow_test))
-print(clf.predict(idf_test))
-print(clf.score(idf_test,output_test))
-sklearn.model_selection.KFold
-scores = cross_val_score(clf,input,expected_output,cv=10)
-#scores = cross_val_score(clf,input,expected_output,cv=10, scoring = 'accuracy')
-#scores = cross_val_score(clf,input,expected_output,cv=10, scoring = 'precision')
-#scores = cross_val_score(clf,input,expected_output,cv=10, scoring = 'recall')
-#scores = cross_val_score(clf,input,expected_output,cv=10, scoring = 'f1')
 
-#print("%0.2f accuracy with a standard deviation of %0.2f" % (scores.mean(), scores.std()))
+
+
+# sklearn.model_selection.KFold
+# cross_val_score uses kfold to split the training and holdout sets
+scores = cross_val_score(clf,bow_train,output_train,cv=10)
+print("%0.2f accuracy with a standard deviation of %0.2f" % (scores.mean(), scores.std()))
+# scores = cross_val_score(clf,input,expected_output,cv=10, scoring = 'accuracy')
+# scores = cross_val_score(clf,input,expected_output,cv=10, scoring = 'precision')
+# scores = cross_val_score(clf,input,expected_output,cv=10, scoring = 'recall')
+# scores = cross_val_score(clf,input,expected_output,cv=10, scoring = 'f1')
+
+prediction = clf.predict(idf_test)
+print(prediction)
+print(clf.score(idf_test,output_test))
+print("accurancy: ",metrics.accuracy_score(output_test,prediction))
+print("precision: ",metrics.precision_score(output_test,prediction,average='macro'))
+print("recall: ",metrics.recall_score(output_test,prediction,average='micro'))
+print("f-measure: ",metrics.f1_score(output_test,prediction,average='weighted'))
+
+
 #print(clf.predict(tweet_list_test))
+#print(clf.predict(bow_test))
 
 #####################################################
 # tests
