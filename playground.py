@@ -5,6 +5,7 @@ import nltk
 from nltk.corpus import stopwords
 # from nrclex import NRCLex
 nltk.download('vader_lexicon')
+nltk.download('stopwords')
 cachedStopWords = stopwords.words("english") 
 from collections import Counter
 import pandas as pd
@@ -30,7 +31,6 @@ def remove_stopwords(x):
 # open a file, where you stored the pickled data
 file = open('eclass_all_with_sentiment_v2.pkl', 'rb')
 
-# # dump information to that file
 data = pickle.load(file)
 
 data['text'] = data['text'].apply(remove_links)
@@ -121,9 +121,6 @@ plt.tight_layout()
 
 
 ########################---------PART 3-----------#######################
-
-
-
 
 use_data = data.iloc[:22000,:]
 rest = data.iloc[22000:,:]

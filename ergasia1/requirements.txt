@@ -15,3 +15,5 @@ yarg==0.1.9
 nltk
 matplotlib
 sklearn
+zeugma
+jupyter

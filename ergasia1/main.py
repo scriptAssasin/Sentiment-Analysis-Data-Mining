@@ -4,6 +4,7 @@ import nltk
 from nltk.corpus import stopwords
 # from nrclex import NRCLex
 nltk.download('vader_lexicon')
+
 cachedStopWords = stopwords.words("english") 
 from collections import Counter
 import pandas as pd
@@ -103,6 +104,24 @@ mean2 = other['sentiment'].value_counts().idxmax()
 # print(mean1,mean2) 
 
 ###################################################
+
+lockdown = data[data['text'].str.contains("lockdown")]
+lockdown_feeling = lockdown['sentiment'].value_counts().idxmax()
+
+print(lockdown_feeling)
+
+vaccinations = data[data['text'].str.contains("vaccination")]
+vaccinations = lockdown['sentiment'].value_counts().idxmax()
+
+print(vaccinations)
+
+
+
+
+
+
+
+#################################################
 
 #Subplots για το πληθος των tweets ανα μήνα
 data['date']= pd.to_datetime(data['date'])
