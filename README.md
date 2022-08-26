@@ -14,8 +14,4 @@ playground.py -> in this file we do the various tests
 
 ergasia1/main.py -> stable version of the assignment, before we move it to jupyter notebook
 
-Branches:
-aggelos -> Aggelos changes
-christos -> Christos changes
-
 We can commit & push at our branches we pull request to main branch and we review each others code
